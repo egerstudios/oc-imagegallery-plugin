@@ -1,3 +1,390 @@
-<p>This is the default markup for component ImageGallery</p>
+<!-- plugins/egerstudios/imagegallery/components/imagegallery/default.htm -->
 
-<small>You can delete this file if you want</small>
+{% set sourceType = __SELF__.property('source_type', 'manual') %}
+{% set gallery = __SELF__.getGalleryData() %}
+{% set componentId = __SELF__.getGalleryId() %}
+
+{% if sourceType == 'model' %}
+    {% set images = gallery ? gallery.images : [] %}
+    {% set layout = gallery ? gallery.layout : 'carousel' %}
+    {% set hasImages = gallery and gallery.images and gallery.images|length > 0 %}
+{% else %}
+    {% set images = __SELF__.getImages() %}
+    {% set layout = __SELF__.property('layout', 'carousel') %}
+    {% set hasImages = images|length > 0 %}
+{% endif %}
+
+{% set visibleImages = sourceType == 'model' ? (gallery ? gallery.getVisibleImages() : []) : __SELF__.getVisibleImages() %}
+
+{% if hasImages %}
+
+</div>
+</div>
+</div>
+<div class="row">
+<div class="col-12">
+    
+    <div id="gallery-{{ componentId }}" class="image-gallery" data-layout="{{ layout }}">
+        
+        {% if layout == 'carousel' %}
+            <!-- Flickity Carousel Layout -->
+            {% set flickityOptions = __SELF__.getFlickityOptions()|default({
+                'autoPlay': 'false',
+                'prevNextButtons': 'true',
+                'pageDots': 'true'
+            }) %}
+            
+            <!-- Debug: {{ flickityOptions|json_encode() }} -->
+            
+            <div class="flickity-carousel" 
+                id="carousel-{{ componentId }}"
+                data-flickity='{ 
+                "cellAlign": "left", 
+                "contain": false, 
+                "wrapAround": false, 
+                "adaptiveHeight": true, 
+                "imagesLoaded": true,
+                "lazyLoad": false,
+                "autoPlay": {{ flickityOptions.autoPlay|default('false') }},
+                "prevNextButtons": {{ flickityOptions.prevNextButtons|default('true') }},
+                "pageDots": {{ flickityOptions.pageDots|default('true') }},
+                "groupCells": 1,
+                "percentPosition": false,
+                "setGallerySize": true,
+                "initialIndex": 0,
+                "draggable": false
+                }'
+                style="height: {{ sourceType == 'model' ? (gallery.getCarouselHeight ? gallery.getCarouselHeight() : 400) : __SELF__.property('carousel_height', 400) }}px;">
+                    
+                    {% for item in images %}
+                        <div class="carousel-cell">
+                            {% if sourceType == 'model' %}
+                                <img src="{{ item.image|media|resize(900,500, {mode: 'crop'}) }}" 
+                                    alt="{{ item.alt_text|default(item.title)|default('Gallery image') }}"
+                                    class="carousel-image-clickable"
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#carouselModal-{{ componentId }}"
+                                    data-image-src="{{ item.image|media|resize(1200,800, {mode: 'crop'}) }}"
+                                    data-image-title="{{ item.title|default('') }}"
+                                    style="cursor: pointer;">
+                                {% if gallery.show_image_titles and item.title %}
+                                    <div class="carousel-caption">
+                                        <h5>{{ item.title }}</h5>
+                                    </div>
+                                {% endif %}
+                            {% else %}
+                                <img src="{{ item.image|media|resize(900,500, {mode: 'crop'}) }}" 
+                                    alt="{{ item.alt_text|default('Gallery image') }}"
+                                    class="carousel-image-clickable"
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#carouselModal-{{ componentId }}"
+                                    data-image-src="{{ item.image|media|resize(1200,800, {mode: 'crop'}) }}"
+                                    data-image-title="{{ item.title|default('') }}"
+                                    style="cursor: pointer;">
+                                {% if __SELF__.property('show_captions') and item.title %}
+                                    <div class="carousel-caption">
+                                        <h5>{{ item.title }}</h5>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+                
+            {% else %}
+                <!-- Masonry Layout -->
+                <div class="masonry-gallery" 
+                    data-columns="{{ sourceType == 'model' ? (gallery.getMasonryColumns ? gallery.getMasonryColumns() : 3) : __SELF__.property('masonry_columns', 3) }}"
+                    data-lightbox="{{ sourceType == 'model' ? (gallery.enable_lightbox ? 'true' : 'false') : (__SELF__.property('enable_lightbox') ? 'true' : 'false') }}">
+                    
+                    <div class="row">
+                        {% set columns = sourceType == 'model' ? (gallery.getMasonryColumns ? gallery.getMasonryColumns() : 3) : __SELF__.property('masonry_columns', 3) %}
+                        {% set colClass = 'col-lg-' ~ (12 // columns) ~ ' col-md-6 col-sm-12' %}
+                        {% set enableLightbox = sourceType == 'model' ? gallery.enable_lightbox : __SELF__.property('enable_lightbox') %}
+                        {% set showCaptions = sourceType == 'model' ? gallery.show_image_titles : __SELF__.property('show_captions', true) %}
+                        
+                        {% for item in visibleImages %}
+                            <div class="{{ colClass }} mb-4">
+                                <div class="card h-100 gallery-card" data-hover-effect="{{ sourceType == 'model' ? (gallery.image_hover_effect ?: 'zoom') : 'zoom' }}">
+                                    <div class="card-img-container">
+                                        {% if sourceType == 'model' %}
+                                            <img src="{{ item.image|media }}" 
+                                                alt="{{ item.alt_text|default(item.title)|default('Gallery image') }}"
+                                                class="card-img-top"
+                                                loading="lazy"
+                                                {% if enableLightbox %}
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#imageModal-{{ componentId }}"
+                                                data-image-src="{{ item.image|media }}"
+                                                data-image-title="{{ item.title|default('') }}"
+                                                style="cursor: pointer;"
+                                                {% endif %}
+                                                style="height: 200px; object-fit: cover;">
+                                        {% else %}
+                                            <img src="{{ item.image|media }}" 
+                                                alt="{{ item.alt_text|default('Gallery image') }}"
+                                                class="card-img-top"
+                                                loading="lazy"
+                                                {% if enableLightbox %}
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#imageModal-{{ componentId }}"
+                                                data-image-src="{{ item.image|media }}"
+                                                data-image-title="{{ item.title|default('') }}"
+                                                style="cursor: pointer;"
+                                                {% endif %}
+                                                style="height: 200px; object-fit: cover;">
+                                        {% endif %}
+                                    </div>
+                                    {% if showCaptions and item.title %}
+                                        <div class="card-body">
+                                            <h6 class="card-title">{{ item.title }}</h6>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    
+                    {% set hasMoreImages = sourceType == 'model' ? (gallery.hasMoreImages ? gallery.hasMoreImages() : false) : __SELF__.hasMoreImages() %}
+                    {% if hasMoreImages %}
+                        <div class="text-center mt-4">
+                                            <button class="btn btn-primary load-more-btn" 
+                            data-request="{{ __SELF__.alias }}::onLoadMore"
+                            data-request-update="'{{ __SELF__.alias }}::masonry_images': '#gallery-{{ componentId }} .hidden-images'"
+                            data-gallery-id="{{ componentId }}">
+                                {% if sourceType == 'model' %}
+                                    {{ gallery.getLoadMoreText ? gallery.getLoadMoreText() : 'Load More' }}
+                                {% else %}
+                                    {{ __SELF__.property('load_more_text', 'Se flere bilder →') }}
+                                {% endif %}
+                            </button>
+                        </div>
+                        <div class="hidden-images"></div>
+                    {% endif %}
+                </div>
+                
+                {% if enableLightbox %}
+                    <!-- Lightbox Modal -->
+                    <div class="modal fade" id="imageModal-{{ componentId }}" tabindex="-1">
+                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title"></h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body text-center">
+                                    <img src="" alt="" class="img-fluid">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    </div>
+    
+    <!-- Carousel Lightbox Modal -->
+    <div class="modal fade" id="carouselModal-{{ componentId }}" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img src="" alt="" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        {% if sourceType == 'model' %}
+            {% if not gallery %}
+                <p><strong>Gallery not found:</strong> Please select a valid gallery or check if the gallery exists.</p>
+            {% else %}
+                <p><strong>{{ gallery.name }}:</strong> No images have been added to this gallery yet.</p>
+            {% endif %}
+        {% else %}
+            <p><strong>Image Gallery:</strong> Please add at least one image in the component settings.</p>
+        {% endif %}
+    </div>
+{% endif %}
+
+</div>
+</div>
+<div class="row">
+    <div class="content mb-4 fs-5">
+        <div class="col-xl-7">
+
+<script>
+// Check if Flickity is loaded
+function waitForFlickity(callback, maxAttempts = 10) {
+    let attempts = 0;
+    const checkFlickity = () => {
+        attempts++;
+        console.log(`Checking for Flickity (attempt ${attempts})...`);
+        
+        if (typeof Flickity !== 'undefined') {
+            console.log('Flickity found!');
+            callback();
+        } else if (attempts < maxAttempts) {
+            console.log('Flickity not found, retrying...');
+            setTimeout(checkFlickity, 500);
+        } else {
+            console.error('Flickity failed to load after', maxAttempts, 'attempts');
+            callback(false);
+        }
+    };
+    checkFlickity();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, checking for Flickity carousel...');
+    
+    // Initialize Flickity carousel if present
+    const carousel = document.querySelector('#carousel-{{ componentId }}');
+    if (carousel) {
+        console.log('Carousel found:', carousel);
+        
+        // Wait for Flickity to load
+        waitForFlickity(function(flickityLoaded) {
+            if (flickityLoaded === false) {
+                console.warn('Flickity not loaded. Showing images without carousel.');
+                showImagesWithoutFlickity(carousel);
+                return;
+            }
+            
+            try {
+                console.log('Initializing Flickity...');
+                // Flickity should initialize automatically from data-flickity attribute
+                const flkty = new Flickity(carousel, {
+                    cellAlign: 'left',
+                    contain: false,
+                    wrapAround: false,
+                    adaptiveHeight: true,
+                    imagesLoaded: true,
+                    lazyLoad: false,
+                    autoPlay: {{ flickityOptions.autoPlay|default('false') }},
+                    prevNextButtons: {{ flickityOptions.prevNextButtons|default('true') }},
+                    pageDots: {{ flickityOptions.pageDots|default('true') }},
+                    groupCells: 1,
+                    percentPosition: false,
+                    setGallerySize: true,
+                    initialIndex: 0,
+                    draggable: false
+                });
+                console.log('Flickity initialized successfully:', flkty);
+                
+                // Track drag state
+                let isDragging = false;
+                
+                // Listen for drag start
+                flkty.on('dragStart', function() {
+                    isDragging = true;
+                });
+                
+                // Listen for drag end
+                flkty.on('dragEnd', function() {
+                    setTimeout(() => {
+                        isDragging = false;
+                    }, 100); // Small delay to prevent immediate clicks after drag
+                });
+                
+                // Listen for settle event (when carousel stops moving)
+                flkty.on('settle', function() {
+                    setTimeout(() => {
+                        isDragging = false;
+                    }, 50);
+                });
+                
+                // Example: Custom event handling
+                flkty.on('change', function(index) {
+                    console.log('Slide changed to:', index);
+                });
+                
+                flkty.on('settle', function() {
+                    console.log('Carousel settled');
+                });
+                
+                // Store the Flickity instance for use in click handlers
+                carousel.flkty = flkty;
+                
+            } catch (error) {
+                console.error('Error initializing Flickity:', error);
+                // Fallback: show images without carousel
+                showImagesWithoutFlickity(carousel);
+            }
+        });
+    } else {
+        console.log('No carousel found with ID: carousel-{{ componentId }}');
+    }
+    
+    // Initialize lightbox if present
+    {% set enableLightbox = sourceType == 'model' ? (gallery and gallery.enable_lightbox) : __SELF__.property('enable_lightbox') %}
+    {% if enableLightbox %}
+    const lightboxImages = document.querySelectorAll('#gallery-{{ componentId }} [data-bs-toggle="modal"]');
+    lightboxImages.forEach(img => {
+        img.addEventListener('click', function() {
+            const modal = document.querySelector('#imageModal-{{ componentId }}');
+            const modalImg = modal.querySelector('.modal-body img');
+            const modalTitle = modal.querySelector('.modal-title');
+            
+            modalImg.src = this.dataset.imageSrc;
+            modalImg.alt = this.dataset.imageTitle || 'Gallery image';
+            modalTitle.textContent = this.dataset.imageTitle || '';
+        });
+    });
+    {% endif %}
+    
+    // Initialize carousel image clicks (simplified since dragging is disabled)
+    const carouselImages = document.querySelectorAll('#gallery-{{ componentId }} .carousel-image-clickable');
+    carouselImages.forEach(img => {
+        img.addEventListener('click', function(e) {
+            const modal = document.querySelector('#carouselModal-{{ componentId }}');
+            const modalImg = modal.querySelector('.modal-body img');
+            const modalTitle = modal.querySelector('.modal-title');
+            
+            modalImg.src = this.dataset.imageSrc;
+            modalImg.alt = this.dataset.imageTitle || 'Gallery image';
+            modalTitle.textContent = this.dataset.imageTitle || '';
+        });
+    });
+});
+
+// Fallback function to show images without Flickity
+function showImagesWithoutFlickity(carousel) {
+    console.log('Showing images without Flickity fallback');
+    // Remove Flickity classes and styles
+    carousel.classList.remove('flickity-enabled', 'is-draggable');
+    
+    // Show all images
+    const images = carousel.querySelectorAll('.carousel-image');
+    images.forEach(img => {
+        // Set src directly if using lazy loading
+        if (img.dataset.flickityLazyload) {
+            img.src = img.dataset.flickityLazyload;
+        }
+        // Ensure image is visible
+        img.style.opacity = '1';
+        img.style.display = 'block';
+    });
+    
+    // Show all cells
+    const cells = carousel.querySelectorAll('.carousel-cell');
+    cells.forEach(cell => {
+        cell.style.position = 'static';
+        cell.style.display = 'block';
+        cell.style.width = '100%';
+        cell.style.marginBottom = '20px';
+    });
+    
+    // Hide navigation elements
+    const buttons = carousel.querySelectorAll('.flickity-button');
+    buttons.forEach(btn => btn.style.display = 'none');
+    
+    const dots = carousel.querySelector('.flickity-page-dots');
+    if (dots) dots.style.display = 'none';
+}
+</script>

@@ -26,6 +26,13 @@ class Plugin extends PluginBase
         ];
     }
 
+    public function registerPageSnippets()
+    {
+        return [
+            'EgerStudios\ImageGallery\Components\ImageGallery' => 'imageGallery'
+        ];
+    }
+
     public function registerNavigation()
     {
         return [
@@ -56,5 +63,20 @@ class Plugin extends PluginBase
                 'label' => 'Access galleries'
             ]
         ];
+    }
+
+    public function boot()
+    {
+        // Register the snippet for RainLab Blog
+        \Event::listen('cms.snippet.registry', function () {
+            return [
+                'imageGallery' => [
+                    'name' => 'Image Gallery',
+                    'description' => 'Display images in carousel or masonry layout',
+                    'component' => 'EgerStudios\ImageGallery\Components\ImageGallery',
+                    'group' => 'Media'
+                ]
+            ];
+        });
     }
 }

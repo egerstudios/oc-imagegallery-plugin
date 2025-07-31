@@ -1,22 +1,23 @@
-<div data-control="toolbar loader-container">
+<!-- plugins/egerstudios/imagegallery/controllers/galleries/_list_toolbar.htm -->
+
+<div data-control="toolbar">
     <a
         href="<?= Backend::url('egerstudios/imagegallery/galleries/create') ?>"
-        class="btn btn-primary">
-        <i class="icon-plus"></i>
-        <?= __("New :name", ['name' => 'Gallery']) ?>
+        class="btn btn-primary oc-icon-plus">
+        New Gallery
     </a>
-
-    <div class="toolbar-divider"></div>
-
+    
     <button
-        class="btn btn-secondary"
+        class="btn btn-default oc-icon-trash-o"
+        disabled="disabled"
+        onclick="$(this).data('request-data', { checked: $('.control-list').listWidget('getChecked') })"
         data-request="onDelete"
-        data-request-message="<?= __("Deleting...") ?>"
-        data-request-confirm="<?= __("Are you sure?") ?>"
-        data-list-checked-trigger
-        data-list-checked-request
-        disabled>
-        <i class="icon-delete"></i>
-        <?= __("Delete") ?>
+        data-request-confirm="Are you sure you want to delete the selected galleries?"
+        data-trigger-action="enable"
+        data-trigger=".control-list input[type=checkbox]"
+        data-trigger-condition="checked"
+        data-request-success="$(this).prop('disabled', true)"
+        data-stripe-load-indicator>
+        Delete selected
     </button>
 </div>

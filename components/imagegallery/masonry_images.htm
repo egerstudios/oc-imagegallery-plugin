@@ -1,0 +1,50 @@
+<!-- plugins/egerstudios/imagegallery/components/imagegallery/masonry_images.htm -->
+
+{% set sourceType = __SELF__.property('source_type', 'manual') %}
+{% set gallery = __SELF__.getGalleryData() %}
+{% set columns = sourceType == 'model' ? (gallery.getMasonryColumns ? gallery.getMasonryColumns() : 3) : __SELF__.property('masonry_columns', 3) %}
+{% set colClass = 'col-lg-' ~ (12 // columns) ~ ' col-md-6 col-sm-12' %}
+{% set enableLightbox = sourceType == 'model' ? gallery.enable_lightbox : __SELF__.property('enable_lightbox') %}
+{% set showCaptions = sourceType == 'model' ? gallery.show_image_titles : __SELF__.property('show_captions', true) %}
+{% set componentId = __SELF__.getGalleryId() %}
+
+{% for item in images %}
+    <div class="{{ colClass }} mb-4">
+        <div class="card h-100 gallery-card" data-hover-effect="{{ sourceType == 'model' ? (gallery.image_hover_effect ?: 'zoom') : 'zoom' }}">
+            <div class="card-img-container">
+                {% if sourceType == 'model' %}
+                    <img src="{{ item.image|media }}" 
+                         alt="{{ item.alt_text|default(item.title)|default('Gallery image') }}"
+                         class="card-img-top"
+                         loading="lazy"
+                         {% if enableLightbox %}
+                         data-bs-toggle="modal" 
+                         data-bs-target="#imageModal-{{ componentId }}"
+                         data-image-src="{{ item.image|media }}"
+                         data-image-title="{{ item.title|default('') }}"
+                         style="cursor: pointer;"
+                         {% endif %}
+                         style="height: 200px; object-fit: cover;">
+                {% else %}
+                    <img src="{{ item.image|media }}" 
+                         alt="{{ item.alt_text|default('Gallery image') }}"
+                         class="card-img-top"
+                         loading="lazy"
+                         {% if enableLightbox %}
+                         data-bs-toggle="modal" 
+                         data-bs-target="#imageModal-{{ componentId }}"
+                         data-image-src="{{ item.image|media }}"
+                         data-image-title="{{ item.title|default('') }}"
+                         style="cursor: pointer;"
+                         {% endif %}
+                         style="height: 200px; object-fit: cover;">
+                {% endif %}
+            </div>
+            {% if showCaptions and item.title %}
+                <div class="card-body">
+                    <h6 class="card-title">{{ item.title }}</h6>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}

@@ -1,0 +1,430 @@
+/* plugins/egerstudios/imagegallery/assets/css/gallery.css */
+
+.image-gallery {
+    margin-bottom: 2rem;
+}
+
+/* Carousel within Bootstrap columns with edge-to-edge overflow */
+.flickity-carousel {
+    overflow: visible; /* Allow content to extend beyond column */
+    position: relative;
+    width: 100%;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.flickity-viewport {
+    overflow: visible; /* Allow carousel content to extend beyond viewport */
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+.flickity-slider {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex; /* Enable flexbox for horizontal layout */
+    left: 0;
+    transform: translateX(0%);
+}
+
+/* Ensure first cell aligns with col-xl-7 content */
+.carousel-cell.ps-8 {
+    padding-left: 8.333333%; /* This should align with col-xl-7 left edge */
+}
+
+/* Container with overflow visible to allow edge-to-edge content */
+.col-xl-7 {
+    overflow: visible;
+}
+
+/* Ensure proper positioning within Bootstrap grid */
+.container-fluid .image-gallery {
+    overflow: visible;
+}
+
+.container-fluid .flickity-carousel {
+    overflow: visible;
+}
+
+/* Ensure carousel cells can extend beyond column boundaries */
+.carousel-cell {
+    width: 600px; /* Much wider for landscape layout to showcase 900x500 images */
+    height: 100%;
+    margin-right: 20px; /* Space between cells */
+    background: #fff;
+    border-radius: 5px;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0; /* Prevent cells from shrinking */
+    left: 0; /* Ensure proper positioning */
+}
+
+/* Allow carousel content to extend beyond column boundaries */
+.image-gallery {
+    overflow: visible;
+    position: relative;
+}
+
+/* Ensure proper z-index for extended content */
+.flickity-carousel {
+    z-index: 1;
+}
+
+.carousel-cell {
+    z-index: 2;
+}
+
+.carousel-cell.is-selected {
+    z-index: 1;
+}
+
+.carousel-image,
+.carousel-cell img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+/* Show images when they're loaded */
+.carousel-image.flickity-lazyloaded,
+.carousel-cell img.flickity-lazyloaded {
+    opacity: 1;
+}
+
+/* Fallback for images without lazy loading */
+.carousel-image[src],
+.carousel-cell img[src] {
+    opacity: 1;
+}
+
+.carousel-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.6));
+    color: white;
+    padding: 20px 15px 15px;
+}
+
+.carousel-caption h5 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+/* Flickity button styling */
+.flickity-button {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    z-index: 2;
+    transform-origin: center center; /* Ensure scaling from center */
+}
+
+.flickity-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 5px rgba(0, 123, 255, 0.25);
+}
+
+.flickity-button:active {
+    opacity: 0.6;
+}
+
+.flickity-button:disabled {
+    opacity: 0.3;
+    cursor: auto;
+}
+
+.flickity-button-icon {
+    fill: #333;
+}
+
+.flickity-prev-next-button {
+    top: 50%;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    transform: translateY(-50%);
+}
+
+.flickity-prev-next-button.previous { left: 10px; }
+.flickity-prev-next-button.next { right: 10px; }
+
+/* Flickity dots styling */
+.flickity-page-dots {
+    position: absolute;
+    width: 100%;
+    bottom: -25px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    text-align: center;
+    line-height: 1;
+}
+
+.flickity-page-dots .dot {
+    height: 4px;
+    width: 40px;
+    margin: 0 4px;
+    background: #333;
+    border-radius: 0;
+    opacity: 0.25;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.flickity-page-dots .dot.is-selected {
+    opacity: 1;
+}
+
+/* Loading placeholder */
+.carousel-cell img[data-flickity-lazyload] {
+    opacity: 0;
+    transition: opacity 0.4s;
+}
+
+.carousel-cell img.flickity-lazyloaded {
+    opacity: 1;
+}
+
+/* Fallback styles when Flickity is not loaded */
+.flickity-carousel:not(.flickity-enabled) .carousel-cell {
+    position: static !important;
+    display: block !important;
+    width: 100% !important;
+    margin-bottom: 20px !important;
+}
+
+.flickity-carousel:not(.flickity-enabled) .carousel-image,
+.flickity-carousel:not(.flickity-enabled) .carousel-cell img {
+    opacity: 1 !important;
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 200px !important;
+}
+
+/* Ensure images are visible even if Flickity fails to load */
+.carousel-cell img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Masonry Styles */
+.masonry-gallery {
+    margin-bottom: 2rem;
+}
+
+.masonry-gallery .gallery-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    cursor: pointer;
+    overflow: hidden;
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.masonry-gallery .card-img-container {
+    overflow: hidden;
+    position: relative;
+}
+
+.masonry-gallery .card-img-top {
+    transition: transform 0.3s ease;
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+/* Hover effects */
+.gallery-card[data-hover-effect="zoom"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.gallery-card[data-hover-effect="zoom"]:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+.gallery-card[data-hover-effect="fade"]:hover .card-img-top {
+    opacity: 0.8;
+}
+
+.gallery-card[data-hover-effect="lift"]:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
+}
+
+.gallery-card[data-hover-effect="none"]:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.gallery-card .card-body {
+    padding: 1rem;
+}
+
+.gallery-card .card-title {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin: 0;
+    color: #333;
+}
+
+.load-more-btn {
+    min-width: 200px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    border-radius: 0.375rem;
+    transition: all 0.2s ease;
+}
+
+.load-more-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+}
+
+/* Lightbox Modal Styles */
+.modal-content {
+    border: none;
+    border-radius: 0.5rem;
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    border-bottom: 1px solid #dee2e6;
+    padding: 1rem 1.5rem;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-body img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.25rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .flickity-carousel {
+        height: auto !important;
+        min-height: 250px;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .carousel-cell {
+        width: 500px; /* Wider landscape layout for tablet */
+        margin-right: 15px;
+    }
+    
+    /* Adjust padding for mobile */
+    .carousel-cell.ps-8 {
+        padding-left: 4.166667%; /* Smaller padding for mobile */
+    }
+    
+    .flickity-prev-next-button {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .flickity-prev-next-button.previous { left: 5px; }
+    .flickity-prev-next-button.next { right: 5px; }
+    
+    .carousel-caption {
+        padding: 15px 10px 10px;
+    }
+    
+    .carousel-caption h5 {
+        font-size: 1rem;
+    }
+    
+    .masonry-gallery .card-img-top {
+        height: 150px !important;
+    }
+    
+    .load-more-btn {
+        min-width: 150px;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .carousel-cell {
+        width: 400px; /* Still maintaining landscape layout on mobile */
+        margin-right: 10px;
+    }
+    
+    /* Adjust padding for very small screens */
+    .carousel-cell.ps-8 {
+        padding-left: 2.083333%; /* Even smaller padding for very small screens */
+    }
+    
+    .masonry-gallery .col-sm-12 {
+        margin-bottom: 1rem;
+    }
+    
+    .gallery-card .card-body {
+        padding: 0.75rem;
+    }
+    
+    .gallery-card .card-title {
+        font-size: 0.85rem;
+    }
+}
+
+/* Specific styles for resized images */
+.carousel-cell img[data-flickity-lazyload] {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}
+
+/* Ensure proper image display in carousel cells */
+.carousel-cell {
+    display: flex;
+    flex-direction: column;
+}
+
+.carousel-cell img {
+    flex: 1;
+    min-height: 0;
+}
+
+/* Clickable carousel images */
+.carousel-image-clickable {
+    cursor: pointer;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.carousel-image-clickable:hover {
+    transform: scale(1.02);
+    opacity: 0.9;
+}
+
+/* Carousel modal styling */
+#carouselModal .modal-dialog {
+    max-width: 90vw;
+}
+
+#carouselModal .modal-body img {
+    max-width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+}

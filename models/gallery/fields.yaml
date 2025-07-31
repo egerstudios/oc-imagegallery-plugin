@@ -1,82 +1,230 @@
 # plugins/egerstudios/imagegallery/models/gallery/fields.yaml
 
-fields:
-    name:
-        label: Gallery Name
-        type: text
-        required: true
-        span: left
-        
-    slug:
-        label: Slug
-        type: text
-        preset:
-            field: name
-            type: slug
-        span: right
-        
-    description:
-        label: Description
-        type: textarea
-        size: small
-        
-    layout:
-        label: Layout Type
-        type: dropdown
-        options: getLayoutOptions
-        default: carousel
-        span: left
-        
-    is_active:
-        label: Active
-        type: checkbox
-        default: true
-        span: right
-        
-    images:
-        label: Gallery Images
-        type: repeater
-        prompt: Add new image
-        minItems: 1
-        form:
-            fields:
-                image:
-                    label: Image
-                    type: mediafinder
-                    mode: image
-                    required: true
-                    span: full
-                    
-                title:
-                    label: Title/Caption
-                    type: text
-                    span: left
-                    
-                alt_text:
-                    label: Alt Text
-                    type: text
-                    span: right
-                    
-    settings:
-        label: Layout Settings
-        type: repeater
-        prompt: Add setting
-        form:
-            fields:
-                key:
-                    label: Setting Key
-                    type: dropdown
-                    options:
-                        carousel_height: Carousel Height
-                        auto_play: Auto Play
-                        show_dots: Show Dots
-                        show_arrows: Show Arrows
-                        masonry_columns: Masonry Columns
-                        images_per_page: Images Per Page
-                        load_more_text: Load More Text
-                    span: left
-                    
-                value:
-                    label: Value
-                    type: text
-                    span: right
+tabs:
+    fields:
+        # Basic Information Tab
+        name:
+            label: Gallery Name
+            type: text
+            required: true
+            span: left
+            tab: Basic Information
+            
+        slug:
+            label: Slug
+            type: text
+            preset:
+                field: name
+                type: slug
+            span: right
+            tab: Basic Information
+            
+        description:
+            label: Description
+            type: textarea
+            size: small
+            tab: Basic Information
+            
+        layout:
+            label: Layout Type
+            type: dropdown
+            options: getLayoutOptions
+            default: carousel
+            span: left
+            tab: Basic Information
+            
+        is_active:
+            label: Active
+            type: checkbox
+            default: true
+            span: right
+            tab: Basic Information
+            
+        # Images Tab
+        images:
+            label: Gallery Images
+            type: repeater
+            prompt: Add new image
+            minItems: 1
+            tab: Images
+            style: default
+            form:
+                fields:
+                    image:
+                        label: Image
+                        type: mediafinder
+                        mode: image
+                        required: true
+                        span: full
+                        thumbOptions:
+                            mode: crop
+                            width: 200
+                            height: 150
+                        imageWidth: 200
+                        imageHeight: 150
+                        
+                    title:
+                        label: Title/Caption
+                        type: text
+                        span: left
+                        comment: Optional caption displayed with the image
+                        
+                    alt_text:
+                        label: Alt Text
+                        type: text
+                        span: right
+                        comment: Important for accessibility and SEO
+                        
+        # Layout Settings Tab
+        carousel_height:
+            label: Carousel Height (px)
+            type: number
+            default: 400
+            span: left
+            tab: Layout Settings
+            trigger:
+                action: show
+                field: layout
+                condition: value[carousel]
+            comment: Height of the carousel in pixels
+            
+        auto_play:
+            label: Auto Play
+            type: checkbox
+            default: false
+            span: right
+            tab: Layout Settings
+            trigger:
+                action: show
+                field: layout
+                condition: value[carousel]
+            comment: Automatically advance slides
+            
+        show_dots:
+            label: Show Navigation Dots
+            type: checkbox
+            default: true
+            span: left
+            tab: Layout Settings
+            trigger:
+                action: show
+                field: layout
+                condition: value[carousel]
+            comment: Display dots for slide navigation
+            
+        show_arrows:
+            label: Show Navigation Arrows
+            type: checkbox
+            default: true
+            span: right
+            tab: Layout Settings
+            trigger:
+                action: show
+                field: layout
+                condition: value[carousel]
+            comment: Display previous/next arrows
+            
+        autoplay_speed:
+            label: Auto Play Speed (ms)
+            type: number
+            default: 4000
+            span: left
+            tab: Layout Settings
+            trigger:
+                action: show
+                field: layout
+                condition: value[carousel]
+            dependsOn: auto_play
+            comment: Time between slides in milliseconds
+            
+        pause_on_hover:
+            label: Pause on Hover
+            type: checkbox
+            default: true
+            span: right
+            tab: Layout Settings
+            trigger:
+                action: show
+                field: layout
+                condition: value[carousel]
+            dependsOn: auto_play
+            comment: Pause autoplay when hovering over carousel
+            
+        masonry_columns:
+            label: Number of Columns
+            type: dropdown
+            options:
+                2: 2 Columns
+                3: 3 Columns (Default)
+                4: 4 Columns
+                5: 5 Columns
+                6: 6 Columns
+            default: 3
+            span: left
+            tab: Layout Settings
+            trigger:
+                action: show
+                field: layout
+                condition: value[masonry]
+            comment: Number of columns in masonry grid
+            
+        images_per_page:
+            label: Images Per Page
+            type: number
+            default: 9
+            span: right
+            tab: Layout Settings
+            trigger:
+                action: show
+                field: layout
+                condition: value[masonry]
+            comment: Number of images to show initially (0 = show all)
+            
+        load_more_text:
+            label: Load More Button Text
+            type: text
+            default: "Se flere bilder →"
+            span: left
+            tab: Layout Settings
+            trigger:
+                action: show
+                field: layout
+                condition: value[masonry]
+            comment: Text displayed on the load more button
+            
+        show_image_titles:
+            label: Show Image Titles
+            type: checkbox
+            default: true
+            span: right
+            tab: Layout Settings
+            comment: Display image titles/captions
+            
+        enable_lightbox:
+            label: Enable Lightbox
+            type: checkbox
+            default: true
+            span: left
+            tab: Layout Settings
+            trigger:
+                action: show
+                field: layout
+                condition: value[masonry]
+            comment: Allow clicking images to view in lightbox
+            
+        image_hover_effect:
+            label: Image Hover Effect
+            type: dropdown
+            options:
+                none: None
+                zoom: Zoom In
+                fade: Fade
+                lift: Lift Up
+            default: zoom
+            span: right
+            tab: Layout Settings
+            trigger:
+                action: show
+                field: layout
+                condition: value[masonry]
+            comment: Effect when hovering over images
