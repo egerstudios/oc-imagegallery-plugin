@@ -1,0 +1,15 @@
+# plugins/egerstudios/imagegallery/controllers/galleries/config_list.yaml
+
+title: Galleries
+modelClass: EgerStudios\ImageGallery\Models\Gallery
+list: ~/plugins/egerstudios/imagegallery/models/gallery/columns.yaml
+
+recordUrl: egerstudios/imagegallery/galleries/update/:id
+
+noRecordsMessage: backend::lang.list.no_records
+recordsPerPage: 20
+showPageNumbers: true
+toolbar:
+    buttons: list_toolbar
+    search:
+        prompt: backend::lang.list.search_prompt

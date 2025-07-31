@@ -1,0 +1,82 @@
+# plugins/egerstudios/imagegallery/models/gallery/fields.yaml
+
+fields:
+    name:
+        label: Gallery Name
+        type: text
+        required: true
+        span: left
+        
+    slug:
+        label: Slug
+        type: text
+        preset:
+            field: name
+            type: slug
+        span: right
+        
+    description:
+        label: Description
+        type: textarea
+        size: small
+        
+    layout:
+        label: Layout Type
+        type: dropdown
+        options: getLayoutOptions
+        default: carousel
+        span: left
+        
+    is_active:
+        label: Active
+        type: checkbox
+        default: true
+        span: right
+        
+    images:
+        label: Gallery Images
+        type: repeater
+        prompt: Add new image
+        minItems: 1
+        form:
+            fields:
+                image:
+                    label: Image
+                    type: mediafinder
+                    mode: image
+                    required: true
+                    span: full
+                    
+                title:
+                    label: Title/Caption
+                    type: text
+                    span: left
+                    
+                alt_text:
+                    label: Alt Text
+                    type: text
+                    span: right
+                    
+    settings:
+        label: Layout Settings
+        type: repeater
+        prompt: Add setting
+        form:
+            fields:
+                key:
+                    label: Setting Key
+                    type: dropdown
+                    options:
+                        carousel_height: Carousel Height
+                        auto_play: Auto Play
+                        show_dots: Show Dots
+                        show_arrows: Show Arrows
+                        masonry_columns: Masonry Columns
+                        images_per_page: Images Per Page
+                        load_more_text: Load More Text
+                    span: left
+                    
+                value:
+                    label: Value
+                    type: text
+                    span: right

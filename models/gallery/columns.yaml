@@ -1,0 +1,28 @@
+# plugins/egerstudios/imagegallery/models/gallery/columns.yaml
+
+columns:
+    name:
+        label: Name
+        type: text
+        searchable: true
+        sortable: true
+        
+    slug:
+        label: Slug
+        type: text
+        searchable: true
+        sortable: true
+        
+    layout:
+        label: Layout
+        type: text
+        sortable: true
+        
+    is_active:
+        label: Active
+        type: switch
+        
+    created_at:
+        label: Created
+        type: datetime
+        sortable: true
